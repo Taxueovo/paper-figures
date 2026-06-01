@@ -1,0 +1,38 @@
+{
+  "name": "architecture",
+  "description": "Neural network architecture diagram template",
+  "width": "double",
+  "aspect_ratio": 0.35,
+  "color_scheme": {
+    "backbone": "#4C72B0",
+    "attention": "#DD8452",
+    "fft_frequency": "#55A868",
+    "fusion": "#8172B3",
+    "output_head": "#C44E52",
+    "input": "#8C8C8C",
+    "loss": "#DA8BC3"
+  },
+  "block_style": {
+    "boxstyle": "round,pad=0.05",
+    "linewidth": 0.8,
+    "alpha": 0.85
+  },
+  "arrow_style": {
+    "arrowstyle": "->",
+    "mutation_scale": 12,
+    "linewidth": 1.0,
+    "color": "#7F7F7F"
+  },
+  "text_style": {
+    "block_fontsize": 8,
+    "dim_fontsize": 7,
+    "dim_fontstyle": "italic",
+    "dim_color": "#555555"
+  },
+  "layout": {
+    "direction": "horizontal",
+    "x_gap": 0.3,
+    "y_center": 0.5
+  },
+  "code_template": "import matplotlib.pyplot as plt\nimport matplotlib.patches as mpatches\nfrom matplotlib.patches import FancyBboxPatch, FancyArrowPatch\nimport json, os\n\n# Load style\nwith open(os.path.join(os.path.dirname(__file__), '..', 'style_config.json')) as f:\n    style = json.load(f)\n\nplt.rcParams.update({\n    'font.family': style['font_family'],\n    'figure.dpi': style['dpi'],\n    'savefig.dpi': style['dpi'],\n    'savefig.bbox': 'tight',\n    'savefig.pad_inches': 0.05,\n})\n\nfig, ax = plt.subplots(figsize=(style['fig_width']['double'], 2.5))\nax.set_xlim(0, 10)\nax.set_ylim(0, 3)\nax.axis('off')\n\n# === CUSTOMIZE: Draw blocks and arrows here ===\n# Example:\n# box = FancyBboxPatch((0.5, 1.0), 1.5, 1.0, boxstyle='round,pad=0.05',\n#                       facecolor='#4C72B0', edgecolor='black', linewidth=0.8)\n# ax.add_patch(box)\n# ax.text(1.25, 1.5, 'Module Name', ha='center', va='center',\n#         fontsize=8, color='white', fontweight='bold')\n\n# === Save ===\noutput_dir = os.environ.get('PAPER_FIGURES_OUTPUT_DIR', os.path.join(os.path.dirname(__file__), '..', 'export'))\nos.makedirs(output_dir, exist_ok=True)\nbase = os.path.join(output_dir, 'architecture')\nfig.savefig(f'{base}.pdf', format='pdf', bbox_inches='tight')\nfig.savefig(f'{base}.svg', format='svg', bbox_inches='tight')\nfig.savefig(f'{base}.png', format='png', dpi=300, bbox_inches='tight')\nprint(f'Saved: {{base}}.{{pdf,svg,png}}')\nplt.close()\n"
+}

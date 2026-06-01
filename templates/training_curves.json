@@ -1,0 +1,31 @@
+{
+  "name": "training_curves",
+  "description": "Training/validation loss and metric curves over epochs",
+  "width": "single",
+  "aspect_ratio": 0.75,
+  "colors": {
+    "train": "#4C72B0",
+    "val": "#DD8452",
+    "test": "#55A868",
+    "lr": "#8C8C8C",
+    "best_epoch": "#C44E52"
+  },
+  "line_styles": {
+    "train": "-",
+    "val": "--",
+    "test": "-.",
+    "lr": ":"
+  },
+  "markers": {
+    "train": "o",
+    "val": "s",
+    "test": "^"
+  },
+  "annotations": {
+    "best_epoch_line": true,
+    "best_epoch_label": "Best epoch",
+    "final_value": true,
+    "early_stop": true
+  },
+  "code_template": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\nimport json, os\n\n# Load style\nwith open(os.path.join(os.path.dirname(__file__), '..', 'style_config.json')) as f:\n    style = json.load(f)\n\nplt.rcParams.update({\n    'font.family': style['font_family'],\n    'font.size': style['font_size']['label'],\n    'axes.labelsize': style['font_size']['label'],\n    'xtick.labelsize': style['font_size']['tick'],\n    'ytick.labelsize': style['font_size']['tick'],\n    'legend.fontsize': style['font_size']['legend'],\n    'lines.linewidth': style['line_width'],\n    'lines.markersize': style['marker_size'],\n    'figure.dpi': style['dpi'],\n    'savefig.dpi': style['dpi'],\n    'savefig.bbox': 'tight',\n    'savefig.pad_inches': 0.05,\n    'axes.spines.top': False,\n    'axes.spines.right': False,\n})\n\n# === Load data ===\n# df = pd.read_csv('path/to/metrics.csv')\n# epochs = df['epoch'].values\n\nfig, ax1 = plt.subplots(figsize=(style['fig_width']['single'],\n                                    style['fig_width']['single'] * style['fig_height_ratio']))\n\n# === Plot loss curves ===\n# ax1.plot(epochs, df['train_loss'], '-o', color='#4C72B0', label='Train', markersize=3)\n# ax1.plot(epochs, df['val_loss'], '--s', color='#DD8452', label='Val', markersize=3)\n# ax1.set_xlabel('Epoch')\n# ax1.set_ylabel('Loss')\n\n# === Optional: second y-axis for metrics ===\n# ax2 = ax1.twinx()\n# ax2.plot(epochs, df['val_mae'], '-.^', color='#55A868', label='Val MAE', markersize=3)\n# ax2.set_ylabel('MAE (degrees)')\n\n# === Mark best epoch ===\n# best_epoch = df.loc[df['val_loss'].idxmin(), 'epoch']\n# ax1.axvline(x=best_epoch, color='#C44E52', linestyle=':', linewidth=1, alpha=0.7)\n# ax1.text(best_epoch + 0.5, ax1.get_ylim()[1]*0.95, f'Best: {best_epoch}',\n#          fontsize=7, color='#C44E52')\n\nax1.legend(loc='upper right')\n\n# === Save ===\noutput_dir = os.environ.get('PAPER_FIGURES_OUTPUT_DIR', os.path.join(os.path.dirname(__file__), '..', 'export'))\nos.makedirs(output_dir, exist_ok=True)\nbase = os.path.join(output_dir, 'training_curves')\nfig.savefig(f'{base}.pdf', format='pdf')\nfig.savefig(f'{base}.svg', format='svg')\nfig.savefig(f'{base}.png', format='png')\nprint(f'Saved: {{base}}.{{pdf,svg,png}}')\nplt.close()\n"
+}

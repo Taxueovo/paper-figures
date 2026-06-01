@@ -1,0 +1,33 @@
+{
+  "name": "scatter_error",
+  "description": "Predicted vs true scatter plot and error distribution histogram",
+  "width": "double",
+  "aspect_ratio": 0.45,
+  "scatter": {
+    "point_color": "#4C72B0",
+    "point_alpha": 0.4,
+    "point_size": 8,
+    "identity_color": "#8C8C8C",
+    "identity_style": "--",
+    "identity_width": 1.0,
+    "r2_position": "upper_left",
+    "mae_position": "lower_right"
+  },
+  "histogram": {
+    "color": "#4C72B0",
+    "edge_color": "white",
+    "bins": 30,
+    "alpha": 0.8,
+    "kde_color": "#C44E52",
+    "kde_width": 1.5,
+    "mean_color": "#DD8452",
+    "median_color": "#55A868"
+  },
+  "calibration": {
+    "point_color": "#4C72B0",
+    "diagonal_color": "#8C8C8C",
+    "diagonal_style": "--",
+    "bin_alpha": 0.6
+  },
+  "code_template": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom scipy import stats\nimport json, os\n\n# Load style\nwith open(os.path.join(os.path.dirname(__file__), '..', 'style_config.json')) as f:\n    style = json.load(f)\n\nplt.rcParams.update({\n    'font.family': style['font_family'],\n    'font.size': style['font_size']['label'],\n    'axes.labelsize': style['font_size']['label'],\n    'xtick.labelsize': style['font_size']['tick'],\n    'ytick.labelsize': style['font_size']['tick'],\n    'legend.fontsize': style['font_size']['legend'],\n    'figure.dpi': style['dpi'],\n    'savefig.dpi': style['dpi'],\n    'savefig.bbox': 'tight',\n    'savefig.pad_inches': 0.05,\n    'axes.spines.top': False,\n    'axes.spines.right': False,\n})\n\n# === Load data ===\n# y_true = np.array([...])\n# y_pred = np.array([...])\n# y_std = np.array([...])  # optional uncertainty\n\n# === Combined figure: scatter + histogram ===\nfig, (ax1, ax2) = plt.subplots(1, 2, figsize=(style['fig_width']['double'],\n                                                  style['fig_width']['double'] * 0.45))\n\n# Scatter plot\n# ax1.scatter(y_true, y_pred, c='#4C72B0', alpha=0.4, s=8, edgecolors='none')\n# lims = [min(y_true.min(), y_pred.min()), max(y_true.max(), y_pred.max())]\n# ax1.plot(lims, lims, '--', color='#8C8C8C', linewidth=1, label='y=x')\n# slope, intercept, r_value, _, _ = stats.linregress(y_true, y_pred)\n# ax1.text(0.05, 0.95, f'R² = {r_value**2:.3f}\\nMAE = {np.mean(np.abs(y_true-y_pred)):.2f}°',\n#          transform=ax1.transAxes, fontsize=8, va='top')\n# ax1.set_xlabel('True Angle (°)')\n# ax1.set_ylabel('Predicted Angle (°)')\n# ax1.legend()\n\n# Error histogram\n# errors = np.abs(y_true - y_pred)\n# ax2.hist(errors, bins=30, color='#4C72B0', edgecolor='white', alpha=0.8)\n# ax2.axvline(x=np.mean(errors), color='#DD8452', linestyle='--', label=f'Mean: {np.mean(errors):.2f}°')\n# ax2.axvline(x=np.median(errors), color='#55A868', linestyle='-.', label=f'Median: {np.median(errors):.2f}°')\n# ax2.set_xlabel('Absolute Error (°)')\n# ax2.set_ylabel('Count')\n# ax2.legend()\n\nplt.tight_layout()\n\n# === Save ===\noutput_dir = os.environ.get('PAPER_FIGURES_OUTPUT_DIR', os.path.join(os.path.dirname(__file__), '..', 'export'))\nos.makedirs(output_dir, exist_ok=True)\nbase = os.path.join(output_dir, 'scatter_error')\nfig.savefig(f'{base}.pdf', format='pdf')\nfig.savefig(f'{base}.svg', format='svg')\nfig.savefig(f'{base}.png', format='png')\nprint(f'Saved: {{base}}.{{pdf,svg,png}}')\nplt.close()\n"
+}
