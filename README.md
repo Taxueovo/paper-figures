@@ -1,5 +1,6 @@
 # paper-figures
 (兄弟我是真不会画图了，没办法了搞了个这个，你们要是也不会就拿去用吧）
+
 Publication-quality figure generation for academic papers. A Claude Code skill that automatically generates publication-ready figures from your research data.
 
 ## Features
