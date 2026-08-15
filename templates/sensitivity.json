@@ -1,32 +1,13 @@
 {
-  "name": "sensitivity",
-  "description": "Parameter sensitivity analysis: 1D line plots and 2D heatmaps",
-  "width": "single",
-  "aspect_ratio": 0.75,
-  "1d_line": {
-    "color": "#4C72B0",
-    "marker": "o",
-    "line_style": "-",
-    "optimal_marker": "*",
-    "optimal_color": "#C44E52",
-    "optimal_size": 12,
-    "grid": true,
-    "grid_alpha": 0.3
+  "figure_type": "sensitivity",
+  "description": "A one-parameter line sweep or two-parameter heatmap generated from CSV data.",
+  "input": {
+    "format": "csv",
+    "required": "Numeric x and value columns; an optional numeric y column enables a heatmap."
   },
-  "2d_heatmap": {
-    "colormap": "viridis",
-    "annotate_cells": true,
-    "annotation_fontsize": 8,
-    "optimal_border_color": "#C44E52",
-    "optimal_border_width": 2
+  "defaults": {
+    "x": "First numeric column",
+    "value": "Last numeric column"
   },
-  "ablation_bar": {
-    "colors": ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3"],
-    "edge_color": "black",
-    "edge_width": 0.5,
-    "alpha": 0.85,
-    "value_labels": true,
-    "label_fontsize": 7
-  },
-  "code_template": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\nimport json, os\n\n# Load style\nwith open(os.path.join(os.path.dirname(__file__), '..', 'style_config.json')) as f:\n    style = json.load(f)\n\nplt.rcParams.update({\n    'font.family': style['font_family'],\n    'font.size': style['font_size']['label'],\n    'axes.labelsize': style['font_size']['label'],\n    'xtick.labelsize': style['font_size']['tick'],\n    'ytick.labelsize': style['font_size']['tick'],\n    'legend.fontsize': style['font_size']['legend'],\n    'figure.dpi': style['dpi'],\n    'savefig.dpi': style['dpi'],\n    'savefig.bbox': 'tight',\n    'savefig.pad_inches': 0.05,\n    'axes.spines.top': False,\n    'axes.spines.right': False,\n})\n\n# === Load data ===\n# df = pd.read_csv('path/to/sensitivity.csv')\n\n# === 1D Sensitivity ===\n# fig, ax = plt.subplots(figsize=(style['fig_width']['single'],\n#                                    style['fig_width']['single'] * style['fig_height_ratio']))\n# ax.plot(df['param'], df['mae'], '-o', color='#4C72B0', label='MAE')\n# best_idx = df['mae'].idxmin()\n# ax.plot(df.loc[best_idx, 'param'], df.loc[best_idx, 'mae'],\n#         '*', color='#C44E52', markersize=12, label='Optimal')\n# ax.set_xlabel('Parameter')\n# ax.set_ylabel('MAE (degrees)')\n# ax.legend()\n\n# === 2D Heatmap ===\n# pivot = df.pivot(index='r1', columns='r2', values='mae')\n# fig, ax = plt.subplots(figsize=(style['fig_width']['single'],\n#                                    style['fig_width']['single'] * 0.8))\n# im = ax.imshow(pivot.values, cmap='viridis', aspect='auto')\n# ax.set_xticks(range(len(pivot.columns)))\n# ax.set_xticklabels(pivot.columns)\n# ax.set_yticks(range(len(pivot.index)))\n# ax.set_yticklabels(pivot.index)\n# for i in range(len(pivot.index)):\n#     for j in range(len(pivot.columns)):\n#         ax.text(j, i, f'{pivot.values[i,j]:.3f}', ha='center', va='center', fontsize=8)\n# plt.colorbar(im, ax=ax, label='MAE')\n\n# === Save ===\noutput_dir = os.environ.get('PAPER_FIGURES_OUTPUT_DIR', os.path.join(os.path.dirname(__file__), '..', 'export'))\nos.makedirs(output_dir, exist_ok=True)\nbase = os.path.join(output_dir, 'sensitivity')\nfig.savefig(f'{base}.pdf', format='pdf')\nfig.savefig(f'{base}.svg', format='svg')\nfig.savefig(f'{base}.png', format='png')\nprint(f'Saved: {{base}}.{{pdf,svg,png}}')\nplt.close()\n"
+  "command": "paper-figures generate sensitivity --data sweep.csv --x alpha --y beta --value score"
 }

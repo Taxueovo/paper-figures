@@ -1,0 +1,5 @@
+method,accuracy,f1_score
+Baseline,0.812,0.794
+Augmented,0.846,0.831
+Ensemble,0.873,0.861
+Proposed,0.901,0.894

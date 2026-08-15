@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    {"id": "input", "label": "Input", "group": "input", "x": 0, "y": 0},
+    {"id": "encoder", "label": "Encoder", "group": "module", "x": 2.4, "y": 0},
+    {"id": "fusion", "label": "Fusion", "group": "fusion", "x": 4.8, "y": 0},
+    {"id": "output", "label": "Prediction", "group": "output", "x": 7.2, "y": 0}
+  ],
+  "edges": [["input", "encoder"], ["encoder", "fusion"], ["fusion", "output"]]
+}
