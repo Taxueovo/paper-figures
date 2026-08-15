@@ -1,93 +1,124 @@
-# paper-figures
-(兄弟我是真不会画图了，没办法了搞了个这个，你们要是也不会就拿去用吧）
+<div align="center">
+  <img src=".github/assets/readme-hero.svg" alt="Paper Figures — real data to publication-ready figures" width="100%">
 
-Publication-quality figure generation for academic papers. A Claude Code skill that automatically generates publication-ready figures from your research data.
+  # Paper Figures
 
-## Features
+  **Turn real research data into reproducible, journal-ready figures.**
 
-- **5 figure types**: Architecture diagrams, training curves, sensitivity/ablation analysis, scatter + error plots, bar charts
-- **Journal presets**: IEEE, Nature/Science, Elsevier, ACM — auto-configured fonts, sizes, and layouts
-- **Triple output**: Every figure exports PDF (for LaTeX) + SVG (editable) + PNG (300 DPI preview)
-- **Data-aware**: Reads CSV files, training logs, and Python model code directly
-- **Quality checks**: Automated style validation (font sizes, DPI, contrast ratios)
+  [![CI](https://github.com/Taxueovo/paper-figures/actions/workflows/ci.yml/badge.svg)](https://github.com/Taxueovo/paper-figures/actions/workflows/ci.yml)
+  [![Python](https://img.shields.io/badge/Python-3.10%2B-2456D1)](https://www.python.org/)
+  [![License](https://img.shields.io/badge/License-MIT-2F855A)](LICENSE)
+</div>
 
-## Quick Start
+Paper Figures is a Python CLI and agent skill for academic visualization. It consumes your CSV or JSON input, applies a validated journal preset, and writes an exact PDF + SVG + 300-DPI PNG triplet. It never invents measurements.
 
-### As a Claude Code Skill
+## Why it is reliable
 
-This project is designed to be used as a [Claude Code skill](https://docs.anthropic.com/en/docs/claude-code). Place it in your skills directory and trigger with:
+- **Real inputs only** — built-in generators read explicit CSV or JSON files.
+- **Five useful figure families** — training curves, prediction/error plots, grouped bars, sensitivity maps, and architecture diagrams.
+- **Deterministic output contract** — a render passes only when the expected files were created or changed by that run.
+- **Meaningful validation** — PNG integrity, dimensions and DPI; SVG structure; PDF header and end marker.
+- **Safe defaults** — existing project files are not overwritten without `--force`; batch failures return a failing exit code.
+- **Journal presets** — Generic, IEEE, Nature, Elsevier, and ACM typography and dimensions.
 
-```
-"generate paper figures"
-"论文插图"
-"画图"
-```
+> [!IMPORTANT]
+> `paper-figures render` runs a Python file as a subprocess. This is process isolation, not a security sandbox. Only render code you trust.
 
-### Standalone Usage
+## Quick start
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up a figure project
-python scripts/setup_project.py /path/to/your/project
-
-# Render a figure
-python scripts/render_figure.py figures/src/fig_01_example.py
-
-# Batch export all figures
-python scripts/batch_export.py figures/src/ figures/export/
-
-# Style check
-python scripts/style_checker.py figures/export/
+git clone https://github.com/Taxueovo/paper-figures.git
+cd paper-figures
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
 ```
 
-## Project Structure
+Generate a training figure from the included real-data example:
 
-```
-paper-figures/
-├── SKILL.md                  # Skill definition and pipeline
-├── requirements.txt          # Python dependencies
-├── scripts/
-│   ├── setup_project.py      # Initialize figure directory structure
-│   ├── render_figure.py      # Execute matplotlib code, export 3 formats
-│   ├── batch_export.py       # Batch export all figures
-│   └── style_checker.py      # Validate publication standards
-├── templates/
-│   ├── architecture.json     # Neural network architecture diagrams
-│   ├── training_curves.json  # Loss/metric curves over epochs
-│   ├── sensitivity.json      # Parameter sweeps, heatmaps, ablation
-│   ├── scatter_error.json    # Prediction vs truth, error histograms
-│   └── bar_chart.json        # Method comparison charts
-├── references/
-│   ├── style-guide.md        # Journal-specific style presets
-│   ├── figure-types.md       # Detailed specs per figure type
-│   ├── color-palettes.md     # Accessible color palettes
-│   └── architecture-diagram.md # Architecture drawing conventions
-└── workflows/
-    ├── from-csv.md           # Generate figure from CSV data
-    ├── from-model.md         # Generate figure from model code
-    └── batch-all.md          # Generate all paper figures at once
+```bash
+paper-figures generate training \
+  --data examples/training_metrics.csv \
+  --x epoch \
+  --series train_loss val_loss \
+  --name training-curves \
+  --output-dir figures/export
 ```
 
-## Supported Journal Styles
+The command creates:
 
-| Journal | Font | Single Width | Double Width |
-|---------|------|-------------|-------------|
-| IEEE (CVPR, ICCV, ECCV) | Times New Roman | 3.5" | 7.16" |
-| Nature / Science | Arial | 3.5" | 7.0" |
-| Elsevier | Times New Roman | 3.54" | 7.28" |
-| ACM (SIGGRAPH, MM) | Times New Roman | 3.3" | 6.75" |
+```text
+figures/export/
+├── training-curves.pdf   # vector output for LaTeX
+├── training-curves.svg   # editable vector output
+└── training-curves.png   # 300-DPI preview / Word output
+```
 
-## Dependencies
+## Figure recipes
 
-- matplotlib >= 3.7.0
-- seaborn >= 0.12.0
-- numpy >= 1.24.0
-- pandas >= 1.5.0
-- scipy >= 1.10.0
-- Pillow >= 9.0.0
+```bash
+# Prediction quality and residual distribution
+paper-figures generate scatter --data examples/predictions.csv
+
+# Grouped method comparison
+paper-figures generate bar --data examples/method_comparison.csv \
+  --category method --series accuracy f1_score
+
+# Two-parameter sensitivity heatmap
+paper-figures generate sensitivity --data examples/sensitivity.csv \
+  --x alpha --y beta --value score
+
+# Architecture from an explicit graph specification
+paper-figures generate architecture --data examples/architecture.json
+```
+
+Use `--config figures/style_config.json` with any command to apply a project-specific preset.
+
+## Reproducible project workflow
+
+```bash
+# Create src/, export/, a figure plan, and an IEEE style config.
+paper-figures setup figures --journal ieee
+
+# Inspect likely data/model sources without changing the project.
+paper-figures setup --scan-only
+
+# Render one trusted custom figure source.
+paper-figures render figures/src/fig_01_results.py
+
+# Render every fig_*.py source and propagate any failure.
+paper-figures batch --src-dir figures/src --export-dir figures/export
+
+# Validate every export triplet; fail on any issue.
+paper-figures check figures/export --strict
+```
+
+The scripts under `scripts/` remain as compatibility wrappers for existing users. New integrations should call the `paper-figures` command or import `paper_figures` directly.
+
+## Input contracts
+
+| Type | Minimum input | Useful overrides |
+| :--- | :--- | :--- |
+| `training` | numeric x + one numeric series | `--x`, `--series` |
+| `scatter` | two numeric columns, 2+ complete rows | `--truth`, `--prediction` |
+| `bar` | category + one numeric series | `--category`, `--series` |
+| `sensitivity` | numeric x + value; optional numeric y | `--x`, `--y`, `--value` |
+| `architecture` | JSON `nodes` and valid `[source, target]` edges | node `label`, `group`, `x`, `y` |
+
+Declarative examples live in [`templates/`](templates), detailed design guidance in [`references/`](references), and agent workflows in [`workflows/`](workflows).
+
+## Development and security
+
+```bash
+python -m pip install -e ".[dev]"
+ruff format --check paper_figures tests scripts
+ruff check paper_figures tests scripts
+pytest
+python scripts/release_audit.py
+```
+
+Every pull request runs the suite on Python 3.10, 3.12, and 3.13. Dependabot monitors both Python and GitHub Actions dependencies. See [SECURITY.md](SECURITY.md) for private vulnerability reporting and [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 Taxueovo

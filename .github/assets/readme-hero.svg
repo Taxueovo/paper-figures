@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Paper Figures</title>
+  <desc id="desc">A polished chart flowing from data points to PDF, SVG, and PNG outputs.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#081525"/>
+      <stop offset="1" stop-color="#102B4E"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#57D9C2"/>
+      <stop offset="1" stop-color="#78A7FF"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="360" rx="28" fill="url(#bg)"/>
+  <g opacity=".13" stroke="#B9D7FF">
+    <path d="M0 72h1200M0 144h1200M0 216h1200M0 288h1200"/>
+    <path d="M120 0v360M240 0v360M360 0v360M480 0v360M600 0v360M720 0v360M840 0v360M960 0v360M1080 0v360"/>
+  </g>
+  <g transform="translate(68 55)">
+    <rect width="455" height="250" rx="18" fill="#0D2037" stroke="#315279"/>
+    <path d="M50 205H412M50 205V38" stroke="#7892AD" stroke-width="2"/>
+    <path d="M54 179C105 178 115 132 166 139S236 102 279 112 338 56 406 70" fill="none" stroke="url(#line)" stroke-width="5" filter="url(#glow)"/>
+    <path d="M54 193C98 192 119 167 164 171s75-31 116-26 76-30 126-26" fill="none" stroke="#F2A65A" stroke-width="4" stroke-dasharray="10 8"/>
+    <g fill="#57D9C2"><circle cx="54" cy="179" r="5"/><circle cx="166" cy="139" r="5"/><circle cx="279" cy="112" r="5"/><circle cx="406" cy="70" r="5"/></g>
+    <text x="52" y="27" fill="#D8E8FA" font-family="system-ui,sans-serif" font-size="15" font-weight="650">REAL DATA · REPRODUCIBLE OUTPUT</text>
+  </g>
+  <g transform="translate(578 73)" font-family="system-ui,sans-serif">
+    <text x="0" y="55" fill="#FFFFFF" font-size="47" font-weight="760" letter-spacing="-.8">Paper Figures</text>
+    <text x="2" y="93" fill="#B8CBE1" font-size="20">Publication-ready figures without invented data.</text>
+    <g transform="translate(2 137)">
+      <rect width="138" height="44" rx="22" fill="#163C50" stroke="#57D9C2"/><text x="69" y="28" text-anchor="middle" fill="#8BE8D7" font-size="15" font-weight="700">PDF · VECTOR</text>
+      <rect x="151" width="138" height="44" rx="22" fill="#1B3154" stroke="#78A7FF"/><text x="220" y="28" text-anchor="middle" fill="#AFC9FF" font-size="15" font-weight="700">SVG · EDIT</text>
+      <rect x="302" width="151" height="44" rx="22" fill="#473322" stroke="#F2A65A"/><text x="377" y="28" text-anchor="middle" fill="#FFD2A6" font-size="15" font-weight="700">PNG · 300 DPI</text>
+    </g>
+    <text x="2" y="231" fill="#7898BA" font-size="15">CSV / JSON  →  journal preset  →  validated triplet</text>
+  </g>
+</svg>
